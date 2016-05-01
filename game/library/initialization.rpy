@@ -34,6 +34,13 @@ init -999 python:
     def content_path(path):
         '''Returns proper path for a file in the content directory *To be used with os module.'''
         return renpy.loader.transfn('content/' + path)
+        
+    # path bindings for easy access to images.
+    gfxpath = "content/gfx/"
+    gfxframes = "content/gfx/frame/"
+    gfximages = "content/gfx/images/"
+    interfaceimages = "content/gfx/interface/images/"
+    interfacebuttons = "content/gfx/interface/buttons/"
     
     # enable logging via the 'logging' module
     logging.basicConfig(level=logging.DEBUG, format='%(levelname)-8s %(name)-15s %(message)s')

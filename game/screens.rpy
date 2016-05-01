@@ -85,7 +85,7 @@ screen say(who, what, side_image=None, two_window=False):
 screen choice(items):
     
     zorder 15
-    modal True
+    # modal True
 
     window:
         style "menu_window"
@@ -406,7 +406,7 @@ screen yesno_prompt(message, yes_action, no_action):
 
     add Transform("content/gfx/images/bg_gradient2.png", alpha=0.3)
     frame:
-        background Frame (Transform("content/gfx/frame/ink_box.png", alpha=0.65), 10, 10)
+        background Frame(Transform("content/gfx/frame/ink_box.png", alpha=0.65), 10, 10)
         style_group "dropdown_gm2"
 
         xfill True

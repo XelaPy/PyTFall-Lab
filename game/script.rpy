@@ -1,7 +1,24 @@
-﻿label start:
+﻿
+        
+    
+
+
+label start:
     $ menu_extensions = MenuExtension()
+    
+label menus:
     menu:
         "GFX":
-            $ pass
+            menu:
+                "UDDs":
+                    $ pass
+                "Screens":
+                    while 1:
+                        menu:
+                            "Quests Pop Up":
+                                show screen quest_notifications("Frog Princess", "Starts")
+                            "Exit":
+                                jump start
+                            
         "Logic":
             $ pass
