@@ -22,8 +22,28 @@ init python:
                     x = x + xspacing
                 y = 0
                 for r in xrange(rows):
-                    self.pos.append(x, y)
+                    self.pos.append((x, y))
                     y = y + size[1] + yspacing
+                    
+        def __len__(self):
+            return len(self.content)
+            
+        def __iter__(self):
+            # We return a list of tuples of [(item, pos), (item, pos), ...] for self.page
+            page = self.get_page_content()
+            pos = self.pos[:len(page)]
+            return iter(zip(page, pos))
+            
+        def __getitem__(self, index):
+            # Minding the page we're on!
+            return self.content[self.page * self.page_size + index]
+            
+        def get_pos(self, item):
+            # retruns a pos of an item on current page.
+            return self.pos[self.get_page_content().index(item)]
+            
+        def __nonzero__(self):
+            return bool(self.content)
                 
         # Next page
         def next(self):
@@ -44,11 +64,6 @@ init python:
             end = (self.page+1) * self.page_size
             return self.content[start:end]
             
-        # Get an item
-        # Items coordinates: page number * page size + displacement from the start of the current page
-        def getitem(self, i):
-            return self.content[self.page * self.page_size + i]
-            
         # group of methods realizing the interface of common listing
         # remove and add an element
         # with recalc of current page
@@ -59,5 +74,73 @@ init python:
         def remove(self, item):
             if item in self.content:
                 self.content.remove(item)
-                
+    
+    def fg_dragged(drags, drop):
+        x, y = workers.get_pos(drags[0].drag_name)
+        
+        if not drop:
+            drags[0].snap(x, y, delay=0.2)
+            renpy.restart_interaction()
+            return
 
+        if char.status == "slave":
+            drags[0].snap(x, y, delay=0.2)
+            renpy.show_screen("message_screen", "Slaves are not allowed to participate in combat!")
+            renpy.restart_interaction()
+            return
+
+        for team in fg.teams:
+            if drop.drag_name == team.name:
+                team = team
+                break
+        else:
+            raise Exception, ["Team unknown during drag/drop!", drop.drag_name, team.name]
+            
+        for t in fg.teams:
+            if t and t[0] == char:
+                drags[0].snap(x, y, delay=0.2)
+                renpy.show_screen("message_screen", "%s is already a leader of %s!" % (char.nickname, t.name))
+                renpy.restart_interaction()
+                return
+            
+            if not team:
+                for girl in t:
+                    if girl == char:
+                        drags[0].snap(x, y, delay=0.2)
+                        renpy.show_screen("message_screen", "%s cannot lead %s as she's already on %s!" % (char.nickname, team.name, t.name))
+                        renpy.restart_interaction()
+                        return
+                        
+        for girl in team:
+            if girl == char:
+                drags[0].snap(x, y, delay=0.2)
+                renpy.show_screen("message_screen", "%s is already on %s!" % (char.nickname, team.name))
+                renpy.restart_interaction()
+                return
+                
+        if len(team) == 3:
+            drags[0].snap(x, y, delay=0.2)
+            renpy.restart_interaction()
+            return
+        else:
+            team.add(char)
+            fg_drags.remove(char)
+            drags[0].snap(x, y)
+
+        return True
+                
+                
+screen draganddrop():
+    fixed:
+        pos 100, 100
+        for i, pos in workers:
+            drag:
+                dragged fg_dragged
+                drag_name i
+                pos pos
+                add i
+                
+label test_drags:
+    $ workers = CoordsForPaging(list(Solid("#%06x" % random.randint(0, 0xFFFFFF), xysize=(100, 100)) for i in xrange(50)))
+    call screen draganddrop
+    return

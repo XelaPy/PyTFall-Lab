@@ -17,6 +17,8 @@ label menus:
                         menu:
                             "Quests Pop Up":
                                 show screen quest_notifications("Frog Princess", "Starts")
+                            "Drag And Drop":
+                                call test_drags
                             "Exit":
                                 jump start
                             
