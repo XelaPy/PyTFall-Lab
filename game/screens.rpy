@@ -85,7 +85,7 @@ screen say(who, what, side_image=None, two_window=False):
 screen choice(items):
     
     zorder 15
-    # modal True
+    modal True
 
     window:
         style "menu_window"
