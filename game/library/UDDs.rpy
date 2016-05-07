@@ -693,7 +693,6 @@ init -100 python:
                         
 
     class Appearing(renpy.Displayable):
-
         def __init__(self, child, opaque_distance, transparent_distance, start_alpha=0.0, **kwargs):
 
             # Pass additional properties on to the renpy.Displayable

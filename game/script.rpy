@@ -11,7 +11,12 @@ label menus:
         "GFX":
             menu:
                 "UDDs":
-                    $ pass
+                    while 1:
+                        menu:
+                            "Shooting Range":
+                                call shooting_range
+                            "Exit":
+                                jump start
                 "Screens":
                     while 1:
                         menu:
